@@ -36,7 +36,7 @@ You can use this approach to display appointment data not only in List but in ot
 - [Scheduler for DevExtreme - How to implement the appointment layout with the appointment template](https://github.com/DevExpress-Examples/devextreme-scheduler-appointment-template)
 - [Scheduler for DevExtreme - How to create a custom editing form](https://github.com/DevExpress-Examples/devextreme-scheduler-create-custom-editing-form)
 <!-- feedback -->
-## Does this example address your development requirements/objectives?
+## Does This Example Address Your Development Requirements/Objectives?
 
 [<img src="https://www.devexpress.com/support/examples/i/yes-button.svg"/>](https://www.devexpress.com/support/examples/survey.xml?utm_source=github&utm_campaign=devextreme-scheduler-create-custom-appointment-tooltip&~~~was_helpful=yes) [<img src="https://www.devexpress.com/support/examples/i/no-button.svg"/>](https://www.devexpress.com/support/examples/survey.xml?utm_source=github&utm_campaign=devextreme-scheduler-create-custom-appointment-tooltip&~~~was_helpful=no)
 
