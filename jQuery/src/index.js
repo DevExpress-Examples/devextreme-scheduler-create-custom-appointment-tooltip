@@ -1,10 +1,102 @@
+const employees = [
+  {
+    text: 'John Heart',
+    id: 1,
+    color: '#56ca85',
+  },
+  {
+    text: 'Sandra Johnson',
+    id: 2,
+    color: '#ff9747',
+  },
+];
+
+const data = [
+  {
+    text: 'Prepare 2021 Financial',
+    employeeID: 2,
+    startDate: new Date('2021-06-01T16:30:00.000'),
+    endDate: new Date('2021-06-01T17:30:00.000'),
+  },
+  {
+    text: 'Prepare 2021 Marketing Plan',
+    employeeID: 1,
+    startDate: new Date('2021-06-01T16:30:00.000'),
+    endDate: new Date('2021-06-01T17:30:00.000'),
+  },
+  {
+    text: 'Update Personnel Files',
+    employeeID: 1,
+    startDate: new Date('2021-06-01T16:30:00.000'),
+    endDate: new Date('2021-06-01T18:30:00.000'),
+  },
+  {
+    text: 'Review Health Insurance Options',
+    employeeID: 2,
+    startDate: new Date('2021-06-01T16:30:00.000'),
+    endDate: new Date('2021-06-01T18:30:00.000'),
+  },
+  {
+    text: 'New Brochures',
+    employeeID: 1,
+    startDate: new Date('2021-06-01T16:30:00.000'),
+    endDate: new Date('2021-06-01T18:30:00.000'),
+  },
+  {
+    text: '2021 Brochure Designs',
+    employeeID: 2,
+    startDate: new Date('2021-06-01T16:30:00.000'),
+    endDate: new Date('2021-06-01T18:30:00.000'),
+  },
+];
+
+const formatDate = (date) => `${date.getHours()}:${date.getMinutes()}`;
+
 $(() => {
-  let count = 0;
-  $('#btn').dxButton({
-    text: `Click count: ${count}`,
-    onClick(e) {
-      count += 1;
-      e.component.option('text', `Click count: ${count}`);
+  const list = $('#list').dxList({
+    width: '33%',
+    dataSource: [],
+    itemTemplate(itemData) {
+      const {
+        text, colorDef, startDate, endDate,
+      } = itemData;
+      const result = $('<div>').addClass('tooltip');
+      const marker = $('<div>').addClass('marker').appendTo(result);
+      const content = $('<div>').appendTo(result);
+      colorDef.done((color) => marker.css({ background: color }));
+      $('<p>').text(text).appendTo(content);
+      $('<p>').text(`${startDate} - ${endDate}`).appendTo(content);
+
+      return result;
+    },
+  }).dxList('instance');
+
+  $('#scheduler').dxScheduler({
+    dataSource: data,
+    currentView: 'week',
+    currentDate: new Date(2021, 5, 2),
+    firstDayOfWeek: 1,
+    startDayHour: 15,
+    endDayHour: 20,
+    showAllDayPanel: false,
+    width: '66%',
+    resources: [
+      {
+        fieldExpr: 'employeeID',
+        allowMultiple: false,
+        dataSource: employees,
+        label: 'Employee',
+      },
+    ],
+    onAppointmentTooltipShowing(e) {
+      e.cancel = true;
+      const { appointments } = e;
+      list.option('dataSource', appointments.map((item) => ({
+        text: item.appointmentData.text,
+        colorDef: item.color,
+        startDate: formatDate(item.appointmentData.startDate),
+        endDate: formatDate(item.appointmentData.endDate),
+      })));
     },
   });
 });
