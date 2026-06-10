@@ -5,7 +5,8 @@ import Content from '../HomeContent.vue';
 
 describe('Content', () => {
   it('renders properly', () => {
-    const wrapper = mount(Content, { props: { text: 'count' } });
-    expect(wrapper.text()).toContain('count');
+    const wrapper = mount(Content);
+    expect(wrapper.find('.dx-scheduler').exists()).toBe(true);
+    expect(wrapper.find('.dx-list').exists()).toBe(true);
   });
 });
