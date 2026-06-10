@@ -1,29 +1,72 @@
 @using ASP_NET_Core.Models
+@model IEnumerable<Appointment>
 
-<h2>Home</h2>
+<script>
+    const employees = [{
+        text: "John Heart",
+        id: 1,
+        color: "#56ca85",
+    }, {
+        text: "Sandra Johnson",
+        id: 2,
+        color: "#ff9747",
+    }];
 
-@(Html.DevExtreme().DataGrid<SampleOrder>()
-    .ShowBorders(true)
-    .DataSource(d => d.Mvc().Controller("SampleData").LoadAction("Get").Key("OrderID"))
-    .Columns(columns => {
-        columns.AddFor(m => m.OrderID);
-        columns.AddFor(m => m.OrderDate);
-        columns.AddFor(m => m.CustomerName);
-        columns.AddFor(m => m.ShipCountry);
-        columns.AddFor(m => m.ShipCity);
-    })
-    .Paging(p => p.PageSize(10))
-    .FilterRow(f => f.Visible(true))
-    .HeaderFilter(f => f.Visible(true))
-    .GroupPanel(p => p.Visible(true))
-    .Grouping(g => g.AutoExpandAll(false))
-    .RemoteOperations(true)
-    .Summary(s => s
-        .TotalItems(totalItems => {
-            totalItems.AddFor(m => m.ShipCity).SummaryType(SummaryType.Count);
-        })
-        .GroupItems(groupItems => {
-            groupItems.Add().SummaryType(SummaryType.Count);
-        })
+    function formatDate(date) {
+        return `${date.getHours()}:${date.getMinutes()}`;
+    }
+
+    function listItemTemplate(itemData) {
+        const result = $("<div>").addClass("tooltip");
+        const marker = $("<div>").addClass("marker").appendTo(result);
+        const content = $("<div>").appendTo(result);
+        itemData.colorDef.done((color) => marker.css({ background: color }));
+        $("<p>").text(itemData.text).appendTo(content);
+        $("<p>").text(`${itemData.startDate} - ${itemData.endDate}`).appendTo(content);
+        return result;
+    }
+
+    function onAppointmentTooltipShowing(e) {
+        e.cancel = true;
+        const list = $("#list").dxList("instance");
+        list.option("dataSource", e.appointments.map((item) => ({
+            text: item.appointmentData.text,
+            colorDef: item.color,
+            startDate: formatDate(item.appointmentData.startDate),
+            endDate: formatDate(item.appointmentData.endDate),
+        })));
+    }
+</script>
+
+<div class="container">
+    @(Html.DevExtreme().List()
+        .ID("list")
+        .Width("33%")
+        .DataSource(new JS("[]"))
+        .ItemTemplate(new JS("listItemTemplate"))
     )
-)
+
+    @(Html.DevExtreme().Scheduler()
+        .ID("scheduler")
+        .DataSource(Model)
+        .TextExpr("Text")
+        .StartDateExpr("StartDate")
+        .EndDateExpr("EndDate")
+        .CurrentView(SchedulerViewType.Week)
+        .CurrentDate(new DateTime(2021, 6, 2))
+        .FirstDayOfWeek(FirstDayOfWeek.Monday)
+        .StartDayHour(15)
+        .EndDayHour(20)
+        .ShowAllDayPanel(false)
+        .Width("66%")
+        .Height(600)
+        .Resources(res => {
+            res.Add()
+                .FieldExpr("EmployeeID")
+                .AllowMultiple(false)
+                .DataSource(new JS("employees"))
+                .Label("Employee");
+        })
+        .OnAppointmentTooltipShowing("onAppointmentTooltipShowing")
+    )
+</div>
