@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { DxSchedulerModule, DxSchedulerTypes } from 'devextreme-angular/ui/scheduler';
 import { DxListModule } from 'devextreme-angular/ui/list';
 import { AppointmentInfoComponent, TooltipItem } from './appointment-info.component';
@@ -8,6 +8,7 @@ import { data, employees } from './data';
     selector: 'app-root',
     imports: [DxSchedulerModule, DxListModule, AppointmentInfoComponent],
     templateUrl: './app.component.html',
+    changeDetection: ChangeDetectionStrategy.Eager,
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
